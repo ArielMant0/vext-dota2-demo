@@ -55,12 +55,24 @@ export const useApp = defineStore('app', {
             this.roles = Array.from(roles.keys());
         },
 
-        setSelected(id) {
-            if (!id) {
+        selectById(id) {
+            if (!id || this.selected && this.selected.hero_id === id) {
                 this.selected = null;
             } else {
                 this.selected = this.heroes.find(d => d.hero_id === id);
             }
+        },
+
+        selectByName(name) {
+            if (!name || this.selected && this.selected.official_name === name) {
+                this.selected = null;
+            } else {
+                this.selected = this.heroes.find(d => d.official_name === name);
+            }
+        },
+
+        isInTeamByName(name) {
+            return this.team.find(d => d && d.official_name === name) !== undefined;
         },
 
         isSelected(hero) {

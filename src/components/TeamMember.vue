@@ -5,7 +5,7 @@
                 <v-card v-bind="props" :color="app.isSelected(data) ? 'primary' : (isHovering ? 'secondary' : undefined)" rounded="circle" class="pa-2">
                     <v-avatar
                         size="60"
-                        :image="data ? getSrc(data.official_name) : placeholder"
+                        :image="data ? getHeroSrc(data.official_name) : placeholder"
                         @click="selectHero"/>
                 </v-card>
             </template>
@@ -14,23 +14,24 @@
             <div class="text-caption">{{ text }}</div>
             <div class="d-flex">
                 <v-img v-if="data"
-                    :src="attrIcon(data.attribute)"
+                    :src="getAttributeSrc(data.attribute)"
                     width="20" max-width="20"
                     class="mr-1"/>
                 {{ data ? data.official_name : "<blank>" }}
             </div>
-            <v-btn v-if="selected && (!data || selected.hero_id !== data.hero_id)"
-                size="small"
-                icon="mdi-swap-horizontal"
-                variant="text"
+            <v-btn :disabled="!selected || (data && selected.hero_id === data.hero_id)"
+                size="x-small"
                 rounded="0"
+                variant="text"
+                icon="mdi-swap-horizontal"
                 @click="switchHero"/>
-            <v-btn v-if="data"
-                size="small"
+            <v-btn :disabled="!data"
+                class="ml-1"
+                size="x-small"
+                rounded="0"
+                variant="text"
                 icon="mdi-delete"
                 color="error"
-                variant="text"
-                rounded="0"
                 @click="resetHero"/>
         </div>
     </div>
@@ -39,6 +40,7 @@
 <script setup>
     import { useApp } from '@/store/app';
     import { storeToRefs } from 'pinia'
+    import { getAttributeSrc, getHeroSrc } from '@/use/utils'
 
     const props = defineProps({
         data: {
@@ -55,17 +57,12 @@
         },
         placeholder: {
             type: String,
-            default: "https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+            default: "images/Dota_2_logo.png"
         },
     });
 
     const app = useApp();
     const { selected } = storeToRefs(app);
-
-    function attrIcon(attribute) {
-        return `images/${attribute}_attribute_symbol.png`
-    }
-    function getSrc(name) { return `images/heroes/${name.replaceAll(" ", "_")}_icon.png` }
 
     function resetHero() { app.resetPosition(props.position) }
     function switchHero() {
@@ -74,9 +71,9 @@
     function selectHero() {
         if (props.data) {
             if (app.selected && app.selected.hero_id === props.data.hero_id) {
-                app.setSelected(null);
+                app.selectById(null);
             } else {
-                app.setSelected(props.data.hero_id)
+                app.selectById(props.data.hero_id)
             }
         } else if (app.selected) {
             app.setPositionToSelected(props.position)

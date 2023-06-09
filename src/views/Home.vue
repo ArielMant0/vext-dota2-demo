@@ -13,7 +13,7 @@
     const app = useApp();
 
     function onHeroClick(hero) {
-        app.setSelected(hero.hero_id);
+        app.selectById(hero.hero_id);
     }
 
     onMounted(function() {
@@ -22,7 +22,16 @@
                 app.setColumns(response.columns)
                 app.setHeroes(response.map(d => {
                     d.roles = d.roles.split(",").map(dd => {
-                        return dd.replaceAll(/'|"|\[|\]|\s/ig, "")
+                        return dd.replaceAll(/"|\[|\]/ig, "").trim().replaceAll(/^'|'$/ig, "")
+                    });
+                    d.good_against = d.good_against.split(",").map(dd => {
+                        return dd.replaceAll(/"|\[|\]/ig, "").trim().replaceAll(/^'|'$/ig, "")
+                    });
+                    d.bad_against = d.bad_against.split(",").map(dd => {
+                        return dd.replaceAll(/"|\[|\]/ig, "").trim().replaceAll(/^'|'$/ig, "")
+                    });
+                    d.work_well_with = d.work_well_with.split(",").map(dd => {
+                        return dd.replaceAll(/"|\[|\]/ig, "").trim().replaceAll(/^'|'$/ig, "")
                     });
                     return d;
                 }))

@@ -4,17 +4,16 @@
         <template v-slot:default="{ isHovering, props }">
             <v-card v-bind="props"
                 variant="flat"
+                :style="{ 'opacity': !app.selected || app.isSelected(item) || isHovering ? 1 : 0.2 }"
                 :color="app.isSelected(item) ? 'primary' : (isHovering ? color : undefined)">
                 <v-img class="ma-1" cover
                     aspect-ratio="1.7778"
                     :width="width"
                     :max-width="width"
                     cross-origin="anonymous"
-                    :src="getSrc(item.official_name)"
+                    :src="getHeroSrc(item.official_name)"
                     :lazy-src="placeholder"
-                    @click="onClick(item)"
-                    @mouseenter="mouseenter"
-                    @mouseleave="mouseleave"/>
+                    @click="onClick(item)"/>
             </v-card>
         </template>
         </v-hover>
@@ -22,7 +21,8 @@
 </template>
 
 <script setup>
-import { useApp } from '@/store/app';
+    import { useApp } from '@/store/app';
+    import { getHeroSrc } from '@/use/utils'
 
     const props = defineProps({
         data: {
@@ -39,7 +39,7 @@ import { useApp } from '@/store/app';
         },
         placeholder: {
             type: String,
-            default: "https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+            default: "images/Dota_2_logo.png"
         }
     });
 
@@ -49,19 +49,5 @@ import { useApp } from '@/store/app';
 
     function onClick(item) {
         emit("click", item);
-    }
-    function getSrc(name) {
-        return `images/heroes/${name.replaceAll(" ", "_")}_icon.png`
-    }
-
-    function mouseenter(event) {
-        if (event.target) {
-            event.target.style.borderColor = props.color;
-        }
-    }
-    function mouseleave(event) {
-        if (event.target) {
-            event.target.style.borderColor = "white";
-        }
     }
 </script>
