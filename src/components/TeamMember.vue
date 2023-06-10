@@ -57,7 +57,7 @@
         },
         placeholder: {
             type: String,
-            default: "images/Dota_2_logo.png"
+            default: "/images/Dota_2_logo.png"
         },
     });
 
