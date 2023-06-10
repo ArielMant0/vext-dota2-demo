@@ -19,6 +19,7 @@ export default createVuetify({
   components: components, // necessary so that all components are included
   directives: directives,  // necessary so that all directives are included
   theme: {
+    defaultTheme: 'dark',
     themes: {
       light: {
         colors: {

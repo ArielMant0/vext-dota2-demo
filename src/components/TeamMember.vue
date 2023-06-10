@@ -2,9 +2,9 @@
     <div class="ma-1 d-flex align-start">
         <v-hover>
             <template v-slot:default="{ isHovering, props }">
-                <v-card v-bind="props" :color="app.isSelected(data) ? 'primary' : (isHovering ? 'secondary' : undefined)" rounded="circle" class="pa-2">
+                <v-card v-bind="props" :color="app.isSelected(data) ? 'primary' : (app.isTeamHighlighted(data) || isHovering ? 'secondary' : undefined)" rounded="circle" class="pa-2">
                     <v-avatar
-                        size="60"
+                        :size="app.isTeamHighlighted(data) ? 65 : 60"
                         :image="data ? getHeroSrc(data.official_name) : placeholder"
                         @click="selectHero"/>
                 </v-card>
@@ -62,7 +62,7 @@
     });
 
     const app = useApp();
-    const { selected } = storeToRefs(app);
+    const { selected, highlight } = storeToRefs(app);
 
     function resetHero() { app.resetPosition(props.position) }
     function switchHero() {
@@ -79,4 +79,5 @@
             app.setPositionToSelected(props.position)
         }
     }
+
 </script>

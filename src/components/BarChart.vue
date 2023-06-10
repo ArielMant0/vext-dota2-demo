@@ -5,8 +5,10 @@
 <script setup>
 
     import * as d3 from 'd3';
+    import { useApp } from '@/store/app';
     import { ref, onMounted, watch } from 'vue';
 
+    const app = useApp();
     const el = ref(null);
     const props = defineProps({
         values: {
@@ -15,6 +17,10 @@
         },
         labels: {
             type: Array,
+            required: true
+        },
+        attr: {
+            type: String,
             required: true
         },
         previewValues: {
@@ -77,7 +83,18 @@
             .attr("y", d => y(d.y))
             .attr("width", x.bandwidth())
             .attr("height", d => y(0) - y(d.y))
-            .attr("fill", "steelblue")
+            .attr("fill", "blue")
+            .on("pointerenter", function(_, d) {
+                app.highlightTeamBy(hero => {
+                    const val = hero[props.attr];
+                    if (Array.isArray(val)) {
+                        return val.includes(d.x)
+                    } else {
+                        return val === d.x;
+                    }
+                });
+            })
+            .on("pointerleave", function() { app.resetTeamHighlight(); })
 
         if (props.previewValues) {
             svg.append("g")

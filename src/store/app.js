@@ -10,6 +10,7 @@ export const useApp = defineStore('app', {
         attributes: ["Strength", "Agility", "Intelligence", "Universal"],
 
         selected: null,
+        highlightTeam: [],
 
         pos1: null,
         pos2: null,
@@ -53,6 +54,10 @@ export const useApp = defineStore('app', {
             });
             const roles = d3.group(allroles, d => d.value)
             this.roles = Array.from(roles.keys());
+        },
+
+        getHeroByName(name) {
+            return this.heroes.find(d => d.official_name === name);
         },
 
         selectById(id) {
@@ -140,5 +145,18 @@ export const useApp = defineStore('app', {
                 this.pos5 = null;
             }
         },
+
+        isTeamHighlighted(hero) {
+            if (!hero || this.highlightTeam.length === 0) return false;
+            return this.highlightTeam.find(d => d.hero_id === hero.hero_id) !== undefined;
+        },
+
+        highlightTeamBy(func) {
+            this.highlightTeam = this.team.filter(d => d !== null && func(d))
+        },
+
+        resetTeamHighlight() {
+            this.highlightTeam = [];
+        }
     }
 })

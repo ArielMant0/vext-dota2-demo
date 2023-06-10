@@ -1,6 +1,8 @@
 <template>
     <div class="d-flex flex-column align-center">
-        <v-switch v-model="showAll" :label="showAll ? 'all heros' : 'team only'"></v-switch>
+        <v-switch v-model="showAll"
+            :label="showAll ? 'all heros' : 'team only'"
+            density="compact"/>
         <svg ref="el" :width="width" :height="height"></svg>
     </div>
 </template>
@@ -122,13 +124,15 @@
                 .attr("fill", d => `url(#image-${d.id.replaceAll(" ", "_")})`)
                 .attr("stroke", d => app.isInTeamByName(d.id) ? "black" : "none")
                 .attr("stroke-width", 2)
-                .on("pointerenter", function() {
+                .on("pointerenter", function(_, d) {
+                    app.highlightTeamBy(hero => hero.work_well_with.includes(d.id));
                     d3.select(this)
                         .transition()
                         .duration(250)
                         .attr("r", props.size*0.5+5)
                 })
                 .on("pointerleave", function() {
+                    app.resetTeamHighlight();
                     d3.select(this)
                         .transition()
                         .duration(250)

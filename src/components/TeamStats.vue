@@ -1,16 +1,25 @@
 <template>
     <div class="d-flex">
         <BarChart
+            attr="attribute"
             :labels="attributes"
             :values="attrValues"
             :previewLabels="app.selected && !app.selectionInTeam ? [app.selected.attribute] : null"
             :previewValues="app.selected && !app.selectionInTeam ? [{ x: app.selected.attribute, y: 1 }] : null"
             :width="400"/>
         <BarChart
+            attr="roles"
             :labels="roles"
             :values="rolesValues"
             :previewLabels="app.selected && !app.selectionInTeam ? app.selected.roles : null"
             :previewValues="app.selected && !app.selectionInTeam ? app.selected.roles.map(d => ({ x: d, y: 1 })) : null"
+            :width="400"/>
+        <BarChart
+            attr="legs"
+            :labels="legLabels"
+            :values="legValues"
+            :previewLabels="app.selected && !app.selectionInTeam ? [app.selected.legs] : null"
+            :previewValues="app.selected && !app.selectionInTeam ? [{ x: app.selected.legs, y: 1 }] : null"
             :width="400"/>
     </div>
 </template>
@@ -33,13 +42,9 @@
     const { attributes, roles } = storeToRefs(app);
 
     const attrValues = computed(() => {
-        const m = d3.group(props.data, d => d ? d.attribute : "");
+        const m = d3.group(props.data.filter(d => d!==null), d => d.attribute);
         const asarray = [];
-        m.forEach((value, key) => {
-            if (key !== "" && value.length > 0) {
-                asarray.push({ x: key, y: value.length })
-            }
-        });
+        m.forEach((value, key) => asarray.push({ x: key, y: value.length }));
         return asarray;
     })
     const rolesValues = computed(() => {
@@ -56,5 +61,14 @@
         return asarray;
     })
 
+    const legLabels = computed(() => {
+        return legValues.value.map(d => ""+d.x)
+    })
+    const legValues = computed(() => {
+        const m = d3.group(props.data.filter(d => d!==null), d => d.legs);
+        const asarray = [];
+        m.forEach((value, key) => asarray.push({ x: key, y: value.length }));
+        return asarray;
+    })
 
 </script>
