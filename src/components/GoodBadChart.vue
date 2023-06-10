@@ -52,7 +52,7 @@
             .selectAll("pattern")
             .data(data.value)
             .join("pattern")
-            .attr("id", d => `image-${d.official_name.replaceAll(" ", "_")}`)
+            .attr("id", d => `image-${d.official_name.replaceAll(/\s|'/gi, "_")}`)
             .attr("patternUnits", "objectBoundingBox")
             .attr("x", 0)
             .attr("y", 0)
@@ -135,7 +135,7 @@
             .attr("y", d => y(d.hero_id))
             .attr("width", props.size)
             .attr("height", props.size)
-            .attr("fill", d => `url(#image-${d.official_name.replaceAll(" ", "_")})`)
+            .attr("fill", d => `url(#image-${d.official_name.replaceAll(/\s|'/gi, "_")})`)
             .on("pointerenter", function() {
                 d3.select(this)
                     .attr("stroke", "black")

@@ -46,6 +46,7 @@ export default defineConfig({
     }
   },
   server: {
+    base: "/vext-dota2-demo/",
     port: 3000,
   },
 })

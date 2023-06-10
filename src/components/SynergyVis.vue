@@ -63,7 +63,7 @@
             .selectAll("pattern")
             .data(graph.value.nodes)
             .join("pattern")
-            .attr("id", d => `image-${d.id.replaceAll(" ", "_")}`)
+            .attr("id", d => `image-${d.id.replaceAll(/\s|'/gi, "_")}`)
             .attr("patternUnits", "objectBoundingBox")
             .attr("x", 0)
             .attr("y", 0)
@@ -94,7 +94,7 @@
                 [width.value*0.5, y(d.target)]
             ]))
             .attr("fill", "none")
-            .attr("stroke", "black")
+            .attr("stroke", "white")
             .attr("stroke-width", 2)
             .attr("stroke-opacity", 0.33)
 
@@ -110,7 +110,7 @@
                 [width.value*0.5, y(d.target)]
             ]))
             .attr("fill", "none")
-            .attr("stroke", "black")
+            .attr("stroke", "white")
             .attr("stroke-width", 2)
             .attr("stroke-opacity", 0.33)
 
@@ -121,8 +121,8 @@
                 .attr("cx", width.value*0.5)
                 .attr("cy", d => y(d.id))
                 .attr("r", props.size*0.5)
-                .attr("fill", d => `url(#image-${d.id.replaceAll(" ", "_")})`)
-                .attr("stroke", d => app.isInTeamByName(d.id) ? "black" : "none")
+                .attr("fill", d => `url(#image-${d.id.replaceAll(/\s|'/gi, "_")})`)
+                .attr("stroke", d => app.isInTeamByName(d.id) ? "white" : "none")
                 .attr("stroke-width", 2)
                 .on("pointerenter", function(_, d) {
                     app.highlightTeamBy(hero => hero.work_well_with.includes(d.id));
