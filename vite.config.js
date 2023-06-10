@@ -8,6 +8,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/vext-dota2-demo/",
   plugins: [
     vue({
       template: { transformAssetUrls }
@@ -46,6 +47,5 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    base: "/vext-dota2-demo/",
   },
 })
