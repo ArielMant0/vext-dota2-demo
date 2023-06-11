@@ -25,6 +25,9 @@
         title: "Task Title",
         description: "Task Description"
     });
+
+    app.init();
+
     const el = ref(null);
     const { scenario, scenarioLoaded, SCENARIO_LIST } = storeToRefs(app);
 

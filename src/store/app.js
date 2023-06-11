@@ -1,6 +1,7 @@
 // Utilities
 import * as d3 from 'd3';
 import { defineStore } from 'pinia'
+import { useVextState } from '@nullbuild/vext';
 
 export const useApp = defineStore('app', {
     state: () => ({
@@ -83,6 +84,46 @@ export const useApp = defineStore('app', {
 
     actions: {
 
+        init() {
+            const state = useVextState();
+            state.on("load", this.loadState.bind(this));
+            this.setState();
+        },
+
+        loadState(state) {
+            this.scenario = state.scenario;
+            this.pos1 = this.getHeroById(state.pos1);
+            this.pos2 = this.getHeroById(state.pos2);
+            this.pos3 = this.getHeroById(state.pos3);
+            this.pos4 = this.getHeroById(state.pos4);
+            this.pos5 = this.getHeroById(state.pos5);
+            this.enemyPos1 = this.getHeroById(state.enemyPos1);
+            this.enemyPos2 = this.getHeroById(state.enemyPos2);
+            this.enemyPos3 = this.getHeroById(state.enemyPos3);
+            this.enemyPos4 = this.getHeroById(state.enemyPos4);
+            this.enemyPos5 = this.getHeroById(state.enemyPos5);
+            this.selected = state.selected;
+            this.useHighlight = false;
+        },
+
+        setState() {
+            const state = useVextState();
+            state.setData({
+                scenario: this.scenario,
+                pos1: this.pos1 ? this.pos1.hero_id : null,
+                pos2: this.pos2 ? this.pos2.hero_id : null,
+                pos3: this.pos3 ? this.pos3.hero_id : null,
+                pos4: this.pos4 ? this.pos4.hero_id : null,
+                pos5: this.pos5 ? this.pos5.hero_id : null,
+                enemyPos1: this.enemyPos1 ? this.enemyPos1.hero_id : null,
+                enemyPos2: this.enemyPos2 ? this.enemyPos2.hero_id : null,
+                enemyPos3: this.enemyPos3 ? this.enemyPos3.hero_id : null,
+                enemyPos4: this.enemyPos4 ? this.enemyPos4.hero_id : null,
+                enemyPos5: this.enemyPos5 ? this.enemyPos5.hero_id : null,
+                selected: this.selected,
+            });
+        },
+
         setColumns(cols) {
             this.columns = cols;
         },
@@ -95,6 +136,7 @@ export const useApp = defineStore('app', {
             });
             const roles = d3.group(allroles, d => d.value)
             this.roles = Array.from(roles.keys());
+            this.setState();
         },
 
         setEnemyTeam(heroes) {
@@ -105,10 +147,17 @@ export const useApp = defineStore('app', {
             this.enemyPos4 = this.heroes.find(d => d.hero_id == idByPos(4));
             this.enemyPos5 = this.heroes.find(d => d.hero_id == idByPos(5));
             this.enemyTeam.forEach(d => d.team = this.TEAMS.ENEMY);
+            this.setState();
         },
 
         getHeroByName(name) {
+            if (name === null) return null;
             return this.heroes.find(d => d.official_name === name);
+        },
+
+        getHeroById(id) {
+            if (id === null) return null;
+            return this.heroes.find(d => d.hero_id === id);
         },
 
         selectById(id) {
@@ -119,6 +168,7 @@ export const useApp = defineStore('app', {
                 this.selected = this.heroes.find(d => d.hero_id === id);
                 this.selected.team = this.TEAMS.ME;
             }
+            this.setState();
         },
 
         selectByName(name) {
@@ -129,6 +179,7 @@ export const useApp = defineStore('app', {
                 this.selected = this.heroes.find(d => d.official_name === name);
                 this.selected.team = this.TEAMS.ME;
             }
+            this.setState();
         },
 
         isAvailable(hero) {
@@ -184,6 +235,7 @@ export const useApp = defineStore('app', {
             }
             this.resetPositionIfDuplicate(this.selected.hero_id, position);
             this.selected = null;
+            this.setState();
         },
 
         resetPosition(position) {
@@ -205,6 +257,7 @@ export const useApp = defineStore('app', {
                     this.pos1 = null;
                     break;
             }
+            this.setState();
         },
 
         resetPositionIfDuplicate(id, ignore) {
@@ -241,6 +294,7 @@ export const useApp = defineStore('app', {
             } else {
                 this.highlightTeam = this.team.filter(d => d && func(d))
             }
+            this.setState();
         },
 
         resetTeamHighlight(team=null) {
@@ -249,6 +303,7 @@ export const useApp = defineStore('app', {
             } else {
                 this.highlightTeam = [];
             }
+            this.setState();
         },
 
         isHeroHighlighted(hero) {
@@ -260,11 +315,13 @@ export const useApp = defineStore('app', {
         highlightHeroBy(func) {
             this.highlightHeroes = this.heroes.filter(func)
             this.useHighlight = true;
+            this.setState();
         },
 
         resetHeroHighlight() {
             this.highlightHeroes = [];
             this.useHighlight = false;
+            this.setState();
         }
     }
 })

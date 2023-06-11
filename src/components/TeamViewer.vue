@@ -28,8 +28,8 @@
         </div>
 
         <TeamStats :data="bothTeams" :groups="teamsArray"/>
-        <div class="d-flex align-start pa-2 ma-2 mb-6 justify-space-around"
-            style="min-width: 50%; max-height: 400px; overflow-y: auto;">
+        <div class="d-flex align-start pa-2 ma-2 mt-6 mb-6 justify-space-around"
+            style="min-width: 50%; max-height: 500px; overflow-y: auto;">
             <SynergyVis :data="team" />
             <GoodBadChart :data="goodBadData" />
         </div>
@@ -49,7 +49,7 @@ const app = useApp();
 const {
     pos1, pos2, pos3, pos4, pos5,
     enemyPos1, enemyPos2, enemyPos3, enemyPos4, enemyPos5,
-    team, bothTeams
+    team, bothTeams, TEAMS
 } = storeToRefs(app);
 
 const props = defineProps({
@@ -85,6 +85,7 @@ const goodBadData = computed(() => {
                         attribute: obj.attribute,
                         bad: 1,
                         good: 0,
+                        team: obj.team
                     };
                 } else {
                     map[obj.hero_id].bad += 1;
@@ -101,7 +102,8 @@ const goodBadData = computed(() => {
                         official_name: obj.official_name,
                         attribute: obj.attribute,
                         good: 1,
-                        bad: 0
+                        bad: 0,
+                        team: obj.team
                     };
                 } else {
                     map[obj.hero_id].good += 1;
@@ -111,7 +113,14 @@ const goodBadData = computed(() => {
     })
 
     const asarray = Object.values(map);
-    asarray.sort((a, b) => (b.good + b.bad) - (a.good + a.bad))
+    asarray.sort((a, b) => {
+        if (a.team === TEAMS.value.ENEMY && b.team !== TEAMS.value.ENEMY) {
+            return -1;
+        } else if (a.team !== TEAMS.value.ENEMY && b.team === TEAMS.value.ENEMY) {
+            return 1;
+        }
+        return Math.max(b.good, b.bad) - Math.max(a.good, a.bad)
+    })
     return asarray
 })
 

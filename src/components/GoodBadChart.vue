@@ -3,7 +3,8 @@
         <div class="text-h6">Good & Bad</div>
         <div class="text-subtitle-2">Which heroes your team is good (right) or bad (left) against</div>
         <v-select v-model="showFilter"
-            :items="['all', 'only good against', 'only bad against']"
+            class="mt-2"
+            :items="['all', 'only enemy team', 'only good against', 'only bad against']"
             density="compact"/>
         <svg ref="el" :width="width" :height="height"></svg>
     </div>
@@ -45,6 +46,9 @@
     const height = computed(() => (props.size+5) * data.value.length);
 
     const data = computed(() => {
+        if (showFilter.value === "only enemy team") {
+            return props.data.filter(d => app.isInEnemyTeam(d))
+        }
         if (showFilter.value === "only good against") {
             return props.data.filter(d => d.good > 0)
         }
@@ -151,10 +155,14 @@
                     .attr("stroke", "white")
                     .attr("stroke-width", 1)
             })
-            .on("pointerleave", function() {
-                d3.select(this).attr("stroke", "none")
+            .on("pointerleave", function(_, d) {
+                d3.select(this)
+                    .attr("stroke", d => app.isInEnemyTeam(d) ? app.enemyColor : "none")
+                    .attr("stroke-width", d => app.isInEnemyTeam(d) ? 2 : 1)
             })
             .on("click", function(_, d) { app.selectById(d.hero_id); })
+            .attr("stroke", d => app.isInEnemyTeam(d) ? app.enemyColor : "none")
+            .attr("stroke-width", d => app.isInEnemyTeam(d) ? 2 : 1)
     }
 
     onMounted(draw);
