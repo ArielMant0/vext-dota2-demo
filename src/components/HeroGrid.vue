@@ -1,19 +1,19 @@
 <template>
     <div class="d-flex flex-wrap justify-center">
-        <v-hover v-for="item in data" :key="item.id">
+        <v-hover v-for="hero in data" :key="hero.id">
         <template v-slot:default="{ isHovering, props }">
             <v-card v-bind="props"
                 variant="flat"
-                :style="{ 'opacity': !app.selected || app.isSelected(item) || isHovering ? 1 : 0.2 }"
-                :color="app.isSelected(item) ? 'primary' : (isHovering ? color : undefined)">
+                :style="{ 'opacity': heroOpacity(hero, isHovering) }"
+                :color="heroColor(hero, isHovering)">
                 <v-img class="ma-1" cover
                     aspect-ratio="1.7778"
                     :width="width"
                     :max-width="width"
                     cross-origin="anonymous"
-                    :src="getHeroSrc(item.official_name)"
+                    :src="getHeroSrc(hero.official_name)"
                     :lazy-src="placeholder"
-                    @click="onClick(item)"/>
+                    @click="onClick(hero)"/>
             </v-card>
         </template>
         </v-hover>
@@ -47,7 +47,25 @@
 
     const app = useApp();
 
-    function onClick(item) {
-        emit("click", item);
+    function onClick(hero) {
+        emit("click", hero);
     }
+
+    function heroOpacity(hero, isHovering) {
+        if (app.useHighlight && app.isHeroHighlighted(hero)) {
+            return 1;
+        }
+        if (app.selected && app.isSelected(hero)) {
+            return 1;
+        }
+        return !app.useHightlight || isHovering ? 1 : 0.2
+    }
+
+    function heroColor(hero, isHovering) {
+        if (isHovering) return "secondary"
+        if (app.isSelected(hero)) return "primary"
+        if (app.isInTeam(hero)) return app.teamColor
+        return "default"
+    }
+
 </script>

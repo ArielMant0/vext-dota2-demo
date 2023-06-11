@@ -20,14 +20,14 @@
                 {{ data ? data.official_name : "<blank>" }}
             </div>
             <v-btn :disabled="!selected || (data && selected.hero_id === data.hero_id)"
-                size="x-small"
+                size="small"
                 rounded="0"
                 variant="text"
                 icon="mdi-swap-horizontal"
                 @click="switchHero"/>
             <v-btn :disabled="!data"
                 class="ml-1"
-                size="x-small"
+                size="small"
                 rounded="0"
                 variant="text"
                 icon="mdi-delete"
@@ -62,7 +62,7 @@
     });
 
     const app = useApp();
-    const { selected, highlight } = storeToRefs(app);
+    const { selected } = storeToRefs(app);
 
     function resetHero() { app.resetPosition(props.position) }
     function switchHero() {

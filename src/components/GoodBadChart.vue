@@ -26,6 +26,14 @@
             type: Number,
             default: 30
         },
+        goodColor: {
+            type: String,
+            default: "#5193c9"
+        },
+        badColor: {
+            type: String,
+            default: "#c95151"
+        },
     });
 
     const app = useApp();
@@ -94,11 +102,11 @@
             .attr("y", d => y(d.hero_id))
             .attr("width", d => x(d.good))
             .attr("height", y.bandwidth())
-            .attr("fill", "blue")
+            .attr("fill", props.goodColor)
             .on("pointerenter", function(_, d) {
                 app.highlightTeamBy(hero => hero.good_against.includes(d.official_name));
                 d3.select(this)
-                    .attr("stroke", "black")
+                    .attr("stroke", "white")
                     .attr("stroke-width", 1)
             })
             .on("pointerleave", function() {
@@ -114,11 +122,11 @@
             .attr("y", d => y(d.hero_id))
             .attr("width", d => x(d.bad))
             .attr("height", y.bandwidth())
-            .attr("fill", "red")
+            .attr("fill", props.badColor)
             .on("pointerenter", function(_, d) {
                 app.highlightTeamBy(hero => hero.bad_against.includes(d.official_name));
                 d3.select(this)
-                    .attr("stroke", "black")
+                    .attr("stroke", "white")
                     .attr("stroke-width", 1)
             })
             .on("pointerleave", function() {
@@ -138,7 +146,7 @@
             .attr("fill", d => `url(#image-${d.official_name.replaceAll(/\s|'/gi, "_")})`)
             .on("pointerenter", function() {
                 d3.select(this)
-                    .attr("stroke", "black")
+                    .attr("stroke", "white")
                     .attr("stroke-width", 1)
             })
             .on("pointerleave", function() {

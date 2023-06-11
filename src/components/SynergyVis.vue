@@ -2,6 +2,7 @@
     <div class="d-flex flex-column align-center">
         <v-switch v-model="showAll"
             :label="showAll ? 'all heros' : 'team only'"
+            color="primary"
             density="compact"/>
         <svg ref="el" :width="width" :height="height"></svg>
     </div>

@@ -1,33 +1,42 @@
 <template>
+    <div class="d-flex flex-column align-center">
+    <div class="mt-2 mb-2">
+        <v-btn v-for="(role, idx) in roles"
+            :class="[idx > 0 ? 'ml-1' : '']"
+            :color="roleFilters.includes(role) ? 'primary' : 'default'"
+            @click="toggleHighlightByRole(role)">{{ role }}</v-btn>
+    </div>
+
     <div class="d-flex">
         <div class="d-flex flex-column align-center ma-1" style="width: 25%">
             <div class="d-flex align-center">
                 <v-img :src="getAttributeSrc('Strength')" width="30" max-width="30" class="mr-1"/>
                 Strength Heroes
             </div>
-            <HeroGrid :data="heroesSTR" :width="width" :color="colorSTR" @click="onClick"/>
+            <HeroGrid :data="heroesSTR" :roles="roleFilters" :width="width" :color="colorSTR" @click="onClick"/>
         </div>
         <div class="d-flex flex-column align-center ma-1" style="width: 25%">
             <div class="d-flex align-center">
                 <v-img :src="getAttributeSrc('Agility')" width="30" max-width="30" class="mr-1"/>
                 Agility Heroes
             </div>
-            <HeroGrid :data="heroesAGI" :width="width" :color="colorAGI" @click="onClick"/>
+            <HeroGrid :data="heroesAGI" :roles="roleFilters" :width="width" :color="colorAGI" @click="onClick"/>
         </div>
         <div class="d-flex flex-column align-center ma-1" style="width: 25%">
             <div class="d-flex align-center">
                 <v-img :src="getAttributeSrc('Intelligence')" width="30" max-width="30" class="mr-1"/>
                 Intelligence Heroes
             </div>
-            <HeroGrid :data="heroesINT" :width="width" :color="colorINT" @click="onClick"/>
+            <HeroGrid :data="heroesINT" :roles="roleFilters"  :width="width" :color="colorINT" @click="onClick"/>
         </div>
         <div class="d-flex flex-column align-center ma-1" style="width: 25%">
             <div class="d-flex align-center">
                 <v-img :src="getAttributeSrc('Universal')" width="30" max-width="30" class="mr-1"/>
                 Universal Heroes
             </div>
-            <HeroGrid :data="heroesUNI" :width="width" :color="colorUNI" @click="onClick"/>
+            <HeroGrid :data="heroesUNI" :roles="roleFilters" :width="width" :color="colorUNI" @click="onClick"/>
         </div>
+    </div>
     </div>
 </template>
 
@@ -36,11 +45,13 @@
     import { useApp } from '@/store/app'
     import { storeToRefs } from 'pinia'
     import { getAttributeSrc } from '@/use/utils'
+    import { reactive } from 'vue';
 
     const app = useApp();
     const {
         heroesSTR, heroesAGI, heroesINT, heroesUNI,
-        colorSTR, colorAGI, colorINT, colorUNI
+        colorSTR, colorAGI, colorINT, colorUNI,
+        roles
     } = storeToRefs(app);
 
     const props = defineProps({
@@ -53,6 +64,22 @@
 
     function onClick(item) {
         emit("click", item);
+    }
+
+    const roleFilters = reactive([])
+
+    function isHighlighted(hero) {
+        return roleFilters.length === 0 || hero.roles.some(d => roleFilters.includes(d))
+    }
+
+    function toggleHighlightByRole(role) {
+        const idx = roleFilters.indexOf(role);
+        if (idx >= 0) {
+            roleFilters.splice(idx, 1);
+        } else {
+            roleFilters.push(role);
+        }
+        app.highlightHeroBy(isHighlighted);
     }
 
 </script>

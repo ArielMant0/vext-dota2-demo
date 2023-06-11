@@ -39,6 +39,10 @@
             type: Number,
             default: 100
         },
+        color: {
+            type: String,
+            default: "#bb86fc"
+        }
     });
 
     function draw() {
@@ -83,7 +87,7 @@
             .attr("y", d => y(d.y))
             .attr("width", x.bandwidth())
             .attr("height", d => y(0) - y(d.y))
-            .attr("fill", "blue")
+            .attr("fill", props.color)
             .on("pointerenter", function(_, d) {
                 app.highlightTeamBy(hero => {
                     const val = hero[props.attr];
@@ -113,7 +117,7 @@
                         y(item.y) - y(item.y + d.y) :
                         y(0) - y(d.y);
                 })
-                .attr("fill", "steelblue")
+                .attr("fill", props.color)
                 .attr("fill-opacity", 0.5)
         }
 

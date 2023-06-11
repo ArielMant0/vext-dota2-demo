@@ -12,6 +12,9 @@ export const useApp = defineStore('app', {
         selected: null,
         highlightTeam: [],
 
+        useHighlight: false,
+        highlightHeroes: [],
+
         pos1: null,
         pos2: null,
         pos3: null,
@@ -21,15 +24,26 @@ export const useApp = defineStore('app', {
 
     getters: {
 
-        heroesSTR: (state) => state.heroes.filter(d => d.primary_attr === "str"),
-        heroesAGI: (state) => state.heroes.filter(d => d.primary_attr === "agi"),
-        heroesINT: (state) => state.heroes.filter(d => d.primary_attr === "int"),
-        heroesUNI: (state) => state.heroes.filter(d => d.primary_attr === "all"),
+        heroesSTR: (state) => {
+            return state.heroes.filter(d => d.primary_attr === "str")
+        },
+        heroesAGI: (state) => {
+            return state.heroes.filter(d => d.primary_attr === "agi")
+        },
+        heroesINT: (state) => {
+            return state.heroes.filter(d => d.primary_attr === "int")
+        },
+        heroesUNI: (state) => {
+            return state.heroes.filter(d => d.primary_attr === "all")
+        },
 
         colorSTR: () => "#ec3d06",
         colorAGI: () => "#26e030",
         colorINT: () => "#00d9ec",
         colorUNI: () => "#593dc8",
+
+        teamColor: () => "#006600",
+        opponentColor: () => "#660000",
 
         selectionInTeam: (state) => {
             if (!state.selected) return false;
@@ -74,6 +88,14 @@ export const useApp = defineStore('app', {
             } else {
                 this.selected = this.heroes.find(d => d.official_name === name);
             }
+        },
+
+        isInTeam(hero) {
+            return hero && this.team.find(d => d && d.hero_id === hero.hero_id) !== undefined;
+        },
+
+        isInTeamById(id) {
+            return this.team.find(d => d && d.hero_id === id) !== undefined;
         },
 
         isInTeamByName(name) {
@@ -157,6 +179,22 @@ export const useApp = defineStore('app', {
 
         resetTeamHighlight() {
             this.highlightTeam = [];
+        },
+
+        isHeroHighlighted(hero) {
+            if (!this.useHighlight) return true;
+            if (!hero || (this.useHighlight && this.highlightHeroes.length === 0)) return false;
+            return this.highlightHeroes.find(d => d.hero_id === hero.hero_id) !== undefined;
+        },
+
+        highlightHeroBy(func) {
+            this.highlightHeroes = this.heroes.filter(func)
+            this.useHighlight = true;
+        },
+
+        resetHeroHighlight() {
+            this.highlightHeroes = [];
+            this.useHighlight = false;
         }
     }
 })

@@ -8,3 +8,19 @@
 // @use 'vuetify/settings' with (
 //   $color-pack: false
 // );
+
+::-webkit-scrollbar
+{
+  width: 10px;  /* for vertical scrollbars */
+  height: 10px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background-color: #111111;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background-color: #444444;
+}

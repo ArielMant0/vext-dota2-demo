@@ -9,7 +9,7 @@
             <TeamMember :data="pos5" :position="5" text="Position 1: Hard Support" :placeholder="placeholder"/>
         </div>
         <TeamStats :data="team"/>
-        <div class="d-flex align-start">
+        <div class="d-flex align-start pa-2 ma-2 mb-6 justify-space-around" style="min-width: 50%; max-height: 400px; overflow-y: auto;">
             <SynergyVis :data="team"/>
             <GoodBadChart :data="goodBadData"/>
         </div>
