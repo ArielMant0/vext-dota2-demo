@@ -13,6 +13,7 @@
                     cross-origin="anonymous"
                     :src="getHeroSrc(hero.official_name)"
                     :lazy-src="placeholder"
+                    :disabled="app.isInEnemyTeam(hero)"
                     @click="onClick(hero)"/>
             </v-card>
         </template>
@@ -52,19 +53,23 @@
     }
 
     function heroOpacity(hero, isHovering) {
+        if (!app.isAvailable(hero)) {
+            return 0.5;
+        }
         if (app.useHighlight && app.isHeroHighlighted(hero)) {
             return 1;
         }
-        if (app.selected && app.isSelected(hero)) {
+        if (app.isSelected(hero)) {
             return 1;
         }
-        return !app.useHightlight || isHovering ? 1 : 0.2
+        return !app.useHighlight || isHovering ? 1 : 0.2
     }
 
     function heroColor(hero, isHovering) {
-        if (isHovering) return "secondary"
         if (app.isSelected(hero)) return "primary"
+        if (isHovering) return "secondary"
         if (app.isInTeam(hero)) return app.teamColor
+        if (app.isInEnemyTeam(hero)) return app.enemyColor
         return "default"
     }
 

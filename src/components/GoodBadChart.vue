@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div class="d-flex flex-column align-center">
+        <div class="text-h6">Good & Bad</div>
+        <div class="text-subtitle-2">Which heroes your team is good (right) or bad (left) against</div>
         <v-select v-model="showFilter"
             :items="['all', 'only good against', 'only bad against']"
             density="compact"/>

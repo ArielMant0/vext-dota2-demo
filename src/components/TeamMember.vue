@@ -19,13 +19,13 @@
                     class="mr-1"/>
                 {{ data ? data.official_name : "<blank>" }}
             </div>
-            <v-btn :disabled="!selected || (data && selected.hero_id === data.hero_id)"
+            <v-btn v-if="!disabled" :disabled="!selected || (data && selected.hero_id === data.hero_id)"
                 size="small"
                 rounded="0"
                 variant="text"
                 icon="mdi-swap-horizontal"
                 @click="switchHero"/>
-            <v-btn :disabled="!data"
+            <v-btn v-if="!disabled" :disabled="!data"
                 class="ml-1"
                 size="small"
                 rounded="0"
@@ -59,6 +59,10 @@
             type: String,
             default: "images/Dota_2_logo.png"
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
     });
 
     const app = useApp();
@@ -69,6 +73,7 @@
         app.setPositionToSelected(props.position)
     }
     function selectHero() {
+        if (props.disabled) return;
         if (props.data) {
             if (app.selected && app.selected.hero_id === props.data.hero_id) {
                 app.selectById(null);

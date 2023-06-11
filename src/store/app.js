@@ -11,15 +11,33 @@ export const useApp = defineStore('app', {
 
         selected: null,
         highlightTeam: [],
+        highlightEnemyTeam: [],
 
         useHighlight: false,
         highlightHeroes: [],
+
+        scenario: { name: "Green vs. Blue", path: "scenarios/green-strat.json" },
+        scenarioLoaded: false,
+        SCENARIO_LIST: [
+            { name: "Green vs. Blue", path: "scenarios/green-strat.json" },
+        ],
+        TEAMS: Object.freeze({
+            NONE: 0,
+            ME: 1,
+            ENEMY: 2
+        }),
 
         pos1: null,
         pos2: null,
         pos3: null,
         pos4: null,
         pos5: null,
+
+        enemyPos1: null,
+        enemyPos2: null,
+        enemyPos3: null,
+        enemyPos4: null,
+        enemyPos5: null,
     }),
 
     getters: {
@@ -43,16 +61,24 @@ export const useApp = defineStore('app', {
         colorUNI: () => "#593dc8",
 
         teamColor: () => "#006600",
-        opponentColor: () => "#660000",
+        enemyColor: () => "#660000",
 
         selectionInTeam: (state) => {
             if (!state.selected) return false;
             return state.team.some(d => d !== null && d.hero_id === state.selected.hero_id)
         },
 
-        team: (state) => {
+        team: state => {
             return [state.pos1, state.pos2, state.pos3, state.pos4, state.pos5]
-        }
+        },
+        enemyTeam: state => {
+            return [state.enemyPos1, state.enemyPos2, state.enemyPos3, state.enemyPos4, state.enemyPos5]
+        },
+        bothTeams: state => {
+            const a = state.team.filter(d => d);
+            const b = state.enemyTeam.filter(d => d);
+            return a.concat(b)
+        },
     },
 
     actions: {
@@ -63,11 +89,22 @@ export const useApp = defineStore('app', {
 
         setHeroes(heroes) {
             this.heroes = heroes;
+            this.heroes.forEach(d => d.team = this.TEAMS.NONE);
             const allroles = heroes.map(d => d.roles).flat().map(d => {
                 return { value: d };
             });
             const roles = d3.group(allroles, d => d.value)
             this.roles = Array.from(roles.keys());
+        },
+
+        setEnemyTeam(heroes) {
+            const idByPos = pos => heroes.find(d => d.position === pos).hero_id
+            this.enemyPos1 = this.heroes.find(d => d.hero_id == idByPos(1));
+            this.enemyPos2 = this.heroes.find(d => d.hero_id == idByPos(2));
+            this.enemyPos3 = this.heroes.find(d => d.hero_id == idByPos(3));
+            this.enemyPos4 = this.heroes.find(d => d.hero_id == idByPos(4));
+            this.enemyPos5 = this.heroes.find(d => d.hero_id == idByPos(5));
+            this.enemyTeam.forEach(d => d.team = this.TEAMS.ENEMY);
         },
 
         getHeroByName(name) {
@@ -76,18 +113,26 @@ export const useApp = defineStore('app', {
 
         selectById(id) {
             if (!id || this.selected && this.selected.hero_id === id) {
+                this.selected.team = this.TEAMS.NONE;
                 this.selected = null;
             } else {
                 this.selected = this.heroes.find(d => d.hero_id === id);
+                this.selected.team = this.TEAMS.ME;
             }
         },
 
         selectByName(name) {
             if (!name || this.selected && this.selected.official_name === name) {
+                this.selected.team = this.TEAMS.NONE;
                 this.selected = null;
             } else {
                 this.selected = this.heroes.find(d => d.official_name === name);
+                this.selected.team = this.TEAMS.ME;
             }
+        },
+
+        isAvailable(hero) {
+            return !this.isInTeam(hero) && !this.isInEnemyTeam(hero);
         },
 
         isInTeam(hero) {
@@ -100,6 +145,18 @@ export const useApp = defineStore('app', {
 
         isInTeamByName(name) {
             return this.team.find(d => d && d.official_name === name) !== undefined;
+        },
+
+        isInEnemyTeam(hero) {
+            return hero && this.enemyTeam.find(d => d && d.hero_id === hero.hero_id) !== undefined;
+        },
+
+        isInEnemyTeamById(id) {
+            return this.enemyTeam.find(d => d && d.hero_id === id) !== undefined;
+        },
+
+        isInEnemyTeamByName(name) {
+            return this.enemyTeam.find(d => d && d.official_name === name) !== undefined;
         },
 
         isSelected(hero) {
@@ -168,17 +225,30 @@ export const useApp = defineStore('app', {
             }
         },
 
-        isTeamHighlighted(hero) {
-            if (!hero || this.highlightTeam.length === 0) return false;
-            return this.highlightTeam.find(d => d.hero_id === hero.hero_id) !== undefined;
+        isTeamHighlighted(hero, team=null) {
+            if (!hero) return false;
+            team = team === null ? hero.team : team;
+            if (team === this.TEAMS.ENEMY) {
+                return this.highlightEnemyTeam.find(d => d.hero_id === hero.hero_id) !== undefined;
+            } else {
+                return this.highlightTeam.find(d => d.hero_id === hero.hero_id) !== undefined;
+            }
         },
 
-        highlightTeamBy(func) {
-            this.highlightTeam = this.team.filter(d => d !== null && func(d))
+        highlightTeamBy(func, team=null) {
+            if (team === this.TEAMS.ENEMY) {
+                this.highlightEnemyTeam = this.enemyTeam.filter(d => d && func(d))
+            } else {
+                this.highlightTeam = this.team.filter(d => d && func(d))
+            }
         },
 
-        resetTeamHighlight() {
-            this.highlightTeam = [];
+        resetTeamHighlight(team=null) {
+            if (team === this.TEAMS.ENEMY) {
+                this.highlightEnemyTeam = [];
+            } else {
+                this.highlightTeam = [];
+            }
         },
 
         isHeroHighlighted(hero) {

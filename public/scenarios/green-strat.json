@@ -1,0 +1,11 @@
+{
+    "title": "Green vs. Blue Strat",
+    "description": "Try to create an effective team where all heros' color palette includes green!",
+    "enemyTeam": [
+        { "hero_id": 10, "position": 1, "official_name": "Morphling" },
+        { "hero_id": 17, "position": 2, "official_name": "Storm Spirit" },
+        { "hero_id": 33, "position": 3, "official_name": "Enigma" },
+        { "hero_id": 91, "position": 4, "official_name": "Io" },
+        { "hero_id": 5,  "position": 5, "official_name": "Crystal Maiden" }
+    ]
+}

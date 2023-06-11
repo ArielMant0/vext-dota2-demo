@@ -1,5 +1,7 @@
 <template>
     <div class="d-flex flex-column align-center">
+        <div class="text-h6">Synergy</div>
+        <div class="text-subtitle-2">Which heroes your teams works well with</div>
         <v-switch v-model="showAll"
             :label="showAll ? 'all heros' : 'team only'"
             color="primary"

@@ -69,7 +69,7 @@
     const roleFilters = reactive([])
 
     function isHighlighted(hero) {
-        return roleFilters.length === 0 || hero.roles.some(d => roleFilters.includes(d))
+        return roleFilters.length === 0 || roleFilters.every(d => hero.roles.includes(d))
     }
 
     function toggleHighlightByRole(role) {

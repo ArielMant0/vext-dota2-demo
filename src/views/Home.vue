@@ -1,9 +1,11 @@
 <template>
     <VextNoteDrawer v-model="open"/>
+    <v-select v-model="scenario" :items="SCENARIO_LIST" item-title="name" return-object @change="loadScenario"/>
     <div ref="el">
-        <VextNoteCanvas :width="size.width" :height="size.height" show-border/>
+        <VextNoteCanvas :width="size.width" :height="size.height" :show-border="false"/>
         <AttributeHeroGrids :width="100" @click="onHeroClick"/>
-        <TeamViewer/>
+        <TaskViewer :title="task.title" :description="task.description"/>
+        <TeamViewer v-if="scenarioLoaded"/>
     </div>
 </template>
 
@@ -12,17 +14,36 @@
     import { ref, reactive, onMounted } from 'vue'
     import { useApp } from '@/store/app'
     import { useElementSize } from '@vueuse/core';
+    import { storeToRefs } from 'pinia';
     import AttributeHeroGrids from '@/components/AttributeHeroGrids.vue'
     import TeamViewer from '@/components/TeamViewer.vue';
+    import TaskViewer from '@/components/TaskViewer.vue';
 
     const app = useApp();
     const open = ref(false);
+    const task = reactive({
+        title: "Task Title",
+        description: "Task Description"
+    });
     const el = ref(null);
+    const { scenario, scenarioLoaded, SCENARIO_LIST } = storeToRefs(app);
 
     const size = reactive(useElementSize(el));
 
     function onHeroClick(hero) {
-        app.selectById(hero.hero_id);
+        if (!app.isInEnemyTeam(hero)) {
+            app.selectById(hero.hero_id);
+        }
+    }
+
+    function loadScenario() {
+        d3.json(scenario.value.path)
+            .then(response => {
+                task.title = response.title;
+                task.description = response.description;
+                app.setEnemyTeam(response.enemyTeam);
+                scenarioLoaded.value = true
+            })
     }
 
     onMounted(function() {
@@ -44,6 +65,7 @@
                     });
                     return d;
                 }))
+                loadScenario();
             })
     })
 </script>
