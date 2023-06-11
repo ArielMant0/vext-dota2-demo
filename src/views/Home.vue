@@ -1,16 +1,25 @@
 <template>
-    <AttributeHeroGrids :width="100" @click="onHeroClick"/>
-    <TeamViewer/>
+    <VextNoteDrawer v-model="open"/>
+    <div ref="el">
+        <VextNoteCanvas :width="size.width" :height="size.height" show-border/>
+        <AttributeHeroGrids :width="100" @click="onHeroClick"/>
+        <TeamViewer/>
+    </div>
 </template>
 
 <script setup>
     import * as d3 from 'd3'
-    import { onMounted } from 'vue'
+    import { ref, reactive, onMounted } from 'vue'
     import { useApp } from '@/store/app'
+    import { useElementSize } from '@vueuse/core';
     import AttributeHeroGrids from '@/components/AttributeHeroGrids.vue'
     import TeamViewer from '@/components/TeamViewer.vue';
 
     const app = useApp();
+    const open = ref(false);
+    const el = ref(null);
+
+    const size = reactive(useElementSize(el));
 
     function onHeroClick(hero) {
         app.selectById(hero.hero_id);
