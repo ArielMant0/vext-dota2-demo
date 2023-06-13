@@ -1,5 +1,6 @@
 <template>
     <VextNoteDrawer v-model="open"/>
+    <VextExtraContent/>
     <div class="d-flex flex-column align-center">
         <div class="d-flex align-center mt-4 mb-4">
             <div class="mr-2">Pick a Scenario:</div>
@@ -26,6 +27,7 @@
     import { useApp } from '@/store/app'
     import { useElementSize } from '@vueuse/core';
     import { storeToRefs } from 'pinia';
+    import { useVextNote } from '@nullbuild/vext';
     import AttributeHeroGrids from '@/components/AttributeHeroGrids.vue'
     import TeamViewer from '@/components/TeamViewer.vue';
     import TaskViewer from '@/components/TaskViewer.vue';
@@ -39,6 +41,11 @@
     });
 
     app.init();
+
+    const note = useVextNote();
+    note.on("canvas:created", function() {
+        note.canvas.freeDrawingCursor = "crosshair";
+    })
 
     const el = ref(null);
     const { scenario, scenarioLoaded, SCENARIO_LIST } = storeToRefs(app);

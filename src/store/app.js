@@ -21,7 +21,7 @@ export const useApp = defineStore('app', {
         useHighlight: false,
         highlightHeroes: [],
 
-        scenario: { name: "Green vs. Blue", path: "scenarios/green-strat.json" },
+        scenario: { name: "TI 2022", path: "scenarios/ti22-winner.json" },
         scenarioLoaded: false,
         SCENARIO_LIST: [
             { name: "Green vs. Blue", path: "scenarios/green-strat.json" },
