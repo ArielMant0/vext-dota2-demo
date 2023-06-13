@@ -1,12 +1,12 @@
 <template>
-    <v-card v-if="selected" class="hero-tt" :style="{ 'top': y+'px', 'left': x+'px', 'max-width': maxWidth+'px', 'max-height': maxHeight+'px' }">
+    <v-card v-if="open && selected" class="hero-tt" :style="{ 'top': y+'px', 'left': x+'px', 'max-width': maxWidth+'px', 'max-height': maxHeight+'px' }">
         <v-card-title>
             <div class="d-flex justify-start align-center">
-                <v-btn class="mr-4" rounded="0" variant="text" icon="mdi-close" size="small" color="error" @click="app.resetSelection()"/>
+                <v-btn class="mr-4" rounded="0" variant="text" icon="mdi-close" size="small" color="error" @click="open = false"/>
                 {{ selected.official_name }}
                 <v-img :src="getAttributeSrc(selected.attribute)"
-                width="20" max-width="20"
-                class="mr-1 ml-2"/>
+                    width="20" max-width="20"
+                    class="mr-1 ml-2"/>
             </div>
         </v-card-title>
         <v-card-text>
@@ -92,13 +92,19 @@
 
     const x = ref(0);
     const y = ref(0);
+    const open = ref(false);
 
     function calcCoordinates() {
-        x.value = tX.value + 5 + props.maxWidth >= window.innerWidth ? tX.value - props.maxWidth - 5 : tX.value + 5;
-        y.value = tY.value + 5 + props.maxHeight >= window.innerHeight ? tY.value - props.maxHeight - 5 : tY.value + 5;
+        x.value = tX.value + 5 + props.maxWidth >= (window.innerWidth+window.scrollX) ? tX.value - props.maxWidth - 5 : tX.value + 5;
+        y.value = tY.value + 5 + props.maxHeight >= (window.innerHeight+window.scrollY) ? tY.value - props.maxHeight - 5 : tY.value + 5;
+    }
+
+    function onHeroSelect() {
+        open.value = true;
     }
 
     watch(() => [tX.value, tY.value], calcCoordinates)
+    watch(selected, onHeroSelect)
 </script>
 
 <style scoped>

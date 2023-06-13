@@ -3,28 +3,28 @@
 
         <div class="d-flex flex-column">
             <div :class="['d-flex', isMobile() ? 'd-row' : 'flex-column']">
-                <div class="text-h5 ml-4">My Team</div>
+                <v-chip class="text-h5 ml-4" :color="app.teamColor" rounded="0">My Team</v-chip>
                 <div :class="['ma-2', 'd-flex', isMobile() ? 'flex-column' : 'flex-row']">
-                    <TeamMember :data="pos1" :position="1" text="Position 1: Safelane" :placeholder="placeholder" />
-                    <TeamMember :data="pos2" :position="2" text="Position 2: Midlane" :placeholder="placeholder" />
-                    <TeamMember :data="pos3" :position="3" text="Position 3: Offlane" :placeholder="placeholder" />
-                    <TeamMember :data="pos4" :position="4" text="Position 4: Soft Support" :placeholder="placeholder" />
-                    <TeamMember :data="pos5" :position="5" text="Position 5: Hard Support" :placeholder="placeholder" />
+                    <TeamMember :data="pos1" :hover-color="app.teamColor" :position="1" text="Position 1: Safelane" :placeholder="placeholder" />
+                    <TeamMember :data="pos2" :hover-color="app.teamColor" :position="2" text="Position 2: Midlane" :placeholder="placeholder" />
+                    <TeamMember :data="pos3" :hover-color="app.teamColor" :position="3" text="Position 3: Offlane" :placeholder="placeholder" />
+                    <TeamMember :data="pos4" :hover-color="app.teamColor" :position="4" text="Position 4: Soft Support" :placeholder="placeholder" />
+                    <TeamMember :data="pos5" :hover-color="app.teamColor" :position="5" text="Position 5: Hard Support" :placeholder="placeholder" />
                 </div>
             </div>
 
             <div :class="['d-flex', isMobile() ? 'flex-row' : 'flex-column']">
-                <div class="text-h5 ml-4 align-self-end">Enemy Team</div>
+                <v-chip class="text-h5 ml-4" :color="app.enemyColor" rounded="0">Enemy Team</v-chip>
                 <div :class="['ma-2', 'd-flex', isMobile() ? 'flex-column' : 'flex-row']">
-                    <TeamMember :data="enemyPos1" disabled :position="1" text="Position 1: Safelane"
+                    <TeamMember :data="enemyPos1" :hover-color="app.enemyColor" disabled :position="1" text="Position 1: Safelane"
                         :placeholder="placeholder" />
-                    <TeamMember :data="enemyPos2" disabled :position="2" text="Position 2: Midlane"
+                    <TeamMember :data="enemyPos2" :hover-color="app.enemyColor" disabled :position="2" text="Position 2: Midlane"
                         :placeholder="placeholder" />
-                    <TeamMember :data="enemyPos3" disabled :position="3" text="Position 3: Offlane"
+                    <TeamMember :data="enemyPos3" :hover-color="app.enemyColor" disabled :position="3" text="Position 3: Offlane"
                         :placeholder="placeholder" />
-                    <TeamMember :data="enemyPos4" disabled :position="4" text="Position 4: Soft Support"
+                    <TeamMember :data="enemyPos4" :hover-color="app.enemyColor" disabled :position="4" text="Position 4: Soft Support"
                         :placeholder="placeholder" />
-                    <TeamMember :data="enemyPos5" disabled :position="5" text="Position 5: Hard Support"
+                    <TeamMember :data="enemyPos5" :hover-color="app.enemyColor" disabled :position="5" text="Position 5: Hard Support"
                         :placeholder="placeholder" />
                 </div>
             </div>
