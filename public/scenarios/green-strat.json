@@ -1,6 +1,6 @@
 {
     "title": "Green vs. Blue Strat",
-    "description": "Try to create an effective team where all heros' color palette includes green!",
+    "description": "Try to create a balanced team where all heros' color palette features the color green!",
     "enemyTeam": [
         { "hero_id": 10, "position": 1, "official_name": "Morphling" },
         { "hero_id": 17, "position": 2, "official_name": "Storm Spirit" },

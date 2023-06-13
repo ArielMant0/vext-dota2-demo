@@ -18,6 +18,10 @@
             type: Array,
             required: true
         },
+        groupColors: {
+            type: Object,
+            required: true
+        },
         values: {
             type: Array,
             required: true
@@ -111,7 +115,7 @@
             .attr("y", d => y(d.y))
             .attr("width", x.bandwidth())
             .attr("height", d => y(0) - y(d.y))
-            .attr("fill", d => d.team === app.TEAMS.ME ? app.teamColor : app.enemyColor)
+            .attr("fill", d => props.groupColors[d.team])
             .on("pointerenter", function(_, d) {
                 app.highlightTeamBy(hero => {
                     const val = hero[props.attr];
@@ -141,7 +145,7 @@
                         y(item.y) - y(item.y + d.y) :
                         y(0) - y(d.y);
                 })
-                .attr("fill", d => app.teamColor)
+                .attr("fill", app.teamColor)
                 .attr("fill-opacity", 0.5)
         }
 

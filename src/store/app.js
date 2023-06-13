@@ -9,6 +9,7 @@ export const useApp = defineStore('app', {
         heroes: [],
         roles: [],
         attributes: ["Strength", "Agility", "Intelligence", "Universal"],
+        attackTypes: ["Ranged", "Melee"],
 
         selected: null,
         highlightTeam: [],
@@ -21,6 +22,7 @@ export const useApp = defineStore('app', {
         scenarioLoaded: false,
         SCENARIO_LIST: [
             { name: "Green vs. Blue", path: "scenarios/green-strat.json" },
+            { name: "TI 2022", path: "scenarios/ti22-winner.json" },
         ],
         TEAMS: Object.freeze({
             NONE: 0,
@@ -61,8 +63,8 @@ export const useApp = defineStore('app', {
         colorINT: () => "#00d9ec",
         colorUNI: () => "#593dc8",
 
-        teamColor: () => "#006600",
-        enemyColor: () => "#660000",
+        teamColor: () => "#00b200",
+        enemyColor: () => "#b20000",
 
         selectionInTeam: (state) => {
             if (!state.selected) return false;
@@ -102,8 +104,11 @@ export const useApp = defineStore('app', {
             this.enemyPos3 = this.getHeroById(state.enemyPos3);
             this.enemyPos4 = this.getHeroById(state.enemyPos4);
             this.enemyPos5 = this.getHeroById(state.enemyPos5);
-            this.selected = state.selected;
+            this.selected = this.getHeroById(state.selected);
             this.useHighlight = false;
+            this.highlightHeroes = state.highlightHeroes.map(d => this.getHeroById(d));
+            this.highlightTeam = [];
+            this.highlightEnemyTeam = [];
         },
 
         setState() {
@@ -120,7 +125,8 @@ export const useApp = defineStore('app', {
                 enemyPos3: this.enemyPos3 ? this.enemyPos3.hero_id : null,
                 enemyPos4: this.enemyPos4 ? this.enemyPos4.hero_id : null,
                 enemyPos5: this.enemyPos5 ? this.enemyPos5.hero_id : null,
-                selected: this.selected,
+                selected: this.selected ? this.selected.hero_id : null,
+                highlightHeroes: this.highlightHeroes.map(d => d.hero_id)
             });
         },
 

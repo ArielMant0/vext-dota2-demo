@@ -6,7 +6,17 @@
             class="mt-2"
             :items="['all', 'only enemy team', 'only good against', 'only bad against']"
             density="compact"/>
-        <svg ref="el" :width="width" :height="height"></svg>
+        <div class="d-flex">
+            <svg ref="el1" :width="width" :height="height"></svg>
+            <TeamStats :data="data"
+                :groups="groups"
+                :group-colors="groupColors"
+                group-attr="inGroup"
+                vertical
+                :include-preview="false"
+                :use-team-minmax="false"
+                :width="300"/>
+        </div>
     </div>
 </template>
 
@@ -15,6 +25,7 @@
     import { getHeroSrc } from '@/use/utils'
     import { computed, ref, onMounted, watch } from 'vue';
     import { useApp } from '@/store/app';
+    import TeamStats from './TeamStats.vue';
 
     const props = defineProps({
         data: {
@@ -40,8 +51,16 @@
     });
 
     const app = useApp();
-    const el = ref(null);
+    const el1 = ref(null);
     const showFilter = ref("all");
+
+    const groups = [{ value: "good", name: "Good Against" }, { value: "bad", name: "Bad Against"}];
+    const groupColors = computed(() => {
+        return {
+            good: props.goodColor,
+            bad: props.badColor,
+        }
+    });
 
     const height = computed(() => (props.size+5) * data.value.length);
 
@@ -59,7 +78,7 @@
     })
 
     function draw() {
-        const svg = d3.select(el.value);
+        const svg = d3.select(el1.value);
         svg.selectAll("*").remove();
 
         svg.append("defs")

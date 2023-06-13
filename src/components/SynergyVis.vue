@@ -125,7 +125,7 @@
                 .attr("cy", d => y(d.id))
                 .attr("r", props.size*0.5)
                 .attr("fill", d => `url(#image-${d.id.replaceAll(/\s|'/gi, "_")})`)
-                .attr("stroke", d => app.isInTeamByName(d.id) ? "white" : "none")
+                .attr("stroke", d => app.isInTeamByName(d.id) ? app.teamColor : (app.isInEnemyTeamByName(d.id) ? app.enemyColor : "none"))
                 .attr("stroke-width", 2)
                 .on("pointerenter", function(_, d) {
                     app.highlightTeamBy(hero => hero.work_well_with.includes(d.id));

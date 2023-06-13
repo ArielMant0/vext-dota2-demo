@@ -1,35 +1,49 @@
 <template>
-    <div class="d-flex">
+    <div :class="['d-flex', vertical ? 'flex-column' : 'flex-row']">
         <BarComparisonChart
             attr="attribute"
             title="Attributes"
             :groups="groups"
+            :group-colors="groupColors"
             :labels="attributes"
             :values="attrValues"
-            :yDomain="minmax"
-            :previewLabels="app.selected && !app.selectionInTeam ? [app.selected.attribute] : null"
-            :previewValues="app.selected && !app.selectionInTeam ? [{ x: app.selected.attribute, y: 1 }] : null"
-            :width="400"/>
+            :yDomain="useTeamMinMax  ? minmax : undefined"
+            :previewLabels="includePreview && app.selected && !app.selectionInTeam ? [app.selected.attribute] : null"
+            :previewValues="includePreview && app.selected && !app.selectionInTeam ? [{ x: app.selected.attribute, y: 1 }] : null"
+            :width="width"/>
         <BarComparisonChart
             attr="roles"
             title="Roles"
             :groups="groups"
+            :group-colors="groupColors"
             :labels="roles"
             :values="rolesValues"
-            :yDomain="minmax"
-            :previewLabels="app.selected && !app.selectionInTeam ? app.selected.roles : null"
-            :previewValues="app.selected && !app.selectionInTeam ? app.selected.roles.map(d => ({ x: d, y: 1 })) : null"
-            :width="400"/>
+            :yDomain="useTeamMinMax  ? minmax : undefined"
+            :previewLabels="includePreview && app.selected && !app.selectionInTeam ? app.selected.roles : null"
+            :previewValues="includePreview && app.selected && !app.selectionInTeam ? app.selected.roles.map(d => ({ x: d, y: 1 })) : null"
+            :width="width"/>
+        <BarComparisonChart
+            attr="attack_type"
+            title="Attack Type"
+            :groups="groups"
+            :group-colors="groupColors"
+            :labels="attackTypes"
+            :values="attackTypesValues"
+            :yDomain="useTeamMinMax  ? minmax : undefined"
+            :previewLabels="includePreview && app.selected && !app.selectionInTeam ? app.selected.roles : null"
+            :previewValues="includePreview && app.selected && !app.selectionInTeam ? app.selected.roles.map(d => ({ x: d, y: 1 })) : null"
+            :width="width"/>
         <BarComparisonChart
             attr="legs"
             title="Number of Legs"
             :groups="groups"
+            :group-colors="groupColors"
             :labels="legLabels"
             :values="legValues"
-            :yDomain="minmax"
-            :previewLabels="app.selected && !app.selectionInTeam ? [app.selected.legs] : null"
-            :previewValues="app.selected && !app.selectionInTeam ? [{ x: app.selected.legs, y: 1 }] : null"
-            :width="400"/>
+            :yDomain="useTeamMinMax  ? minmax : undefined"
+            :previewLabels="includePreview && app.selected && !app.selectionInTeam ? [app.selected.legs] : null"
+            :previewValues="includePreview && app.selected && !app.selectionInTeam ? [{ x: app.selected.legs, y: 1 }] : null"
+            :width="width"/>
     </div>
 </template>
 
@@ -45,21 +59,52 @@
             type: Array,
             required: true
         },
+        groupColors: {
+            type: Object,
+            required: true
+        },
+        groupAttr: {
+            type: String,
+            default: "team"
+        },
         data: {
             type: Array,
             required: true
         },
+        vertical: {
+            type: Boolean,
+            default: false
+        },
+        includePreview: {
+            type: Boolean,
+            default: true
+        },
+        useTeamMinMax: {
+            type: Boolean,
+            default: true
+        },
+        width: {
+            type: Number,
+            default: 400
+        },
     });
 
     const app = useApp();
-    const { attributes, roles } = storeToRefs(app);
+    const { attributes, roles, attackTypes } = storeToRefs(app);
 
     const minmax = d3.range(0, 7, 1);
+
+    function inGroup(item, group) {
+        if (Array.isArray(item[props.groupAttr])) {
+            return item[props.groupAttr].includes(group)
+        }
+        return item[props.groupAttr] === group;
+    }
 
     const attrValues = computed(() => {
         const asarray = [];
         props.groups.forEach(g => {
-            const m = d3.group(props.data.filter(d => d && d.team===g.value), d => d.attribute);
+            const m = d3.group(props.data.filter(d => d && inGroup(d, g.value)), d => d.attribute);
             m.forEach((value, key) => asarray.push({ x: key, y: value.length, team: g.value }));
         })
         return asarray;
@@ -69,7 +114,7 @@
         props.groups.forEach(g => {
 
             const allrolesA = props.data
-                .filter(d => d && d.team===g.value)
+                .filter(d => d && inGroup(d, g.value))
                 .map(d => d ? d.roles : [])
                 .flat()
                 .map(d => ({ value: d }));
@@ -83,11 +128,19 @@
         });
         return asarray;
     })
+    const attackTypesValues = computed(() => {
+        const asarray = [];
+        props.groups.forEach(g => {
+            const m = d3.group(props.data.filter(d => d && inGroup(d, g.value)), d => d.attack_type);
+            m.forEach((value, key) => asarray.push({ x: key, y: value.length, team: g.value }));
+        })
+        return asarray;
+    })
 
     const legValues = computed(() => {
         const asarray = [];
         props.groups.forEach(g => {
-            const m = d3.group(props.data.filter(d => d && d.team===g.value), d => d.legs);
+            const m = d3.group(props.data.filter(d => d && inGroup(d, g.value)), d => d.legs);
             m.forEach((value, key) => asarray.push({ x: key, y: value.length, team: g.value }));
         });
         return asarray;

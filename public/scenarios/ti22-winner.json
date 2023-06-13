@@ -1,0 +1,11 @@
+{
+    "title": "Beat the TI 2022 Winner",
+    "description": "The enemy team is the team constellation from winning team of the second game of the 2022 largest DotA 2 tournament grand final 'The International 2022'. Try to draft a balanced team to beat them!",
+    "enemyTeam": [
+        { "hero_id":  81, "position": 1, "official_name": "Chaos Knight" },
+        { "hero_id": 113, "position": 2, "official_name": "Arc Warden" },
+        { "hero_id":  92, "position": 3, "official_name": "Visage" },
+        { "hero_id": 136, "position": 4, "official_name": "Marci" },
+        { "hero_id": 100,  "position": 5, "official_name": "Phoenix" }
+    ]
+}

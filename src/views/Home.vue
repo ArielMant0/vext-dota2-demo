@@ -1,17 +1,23 @@
 <template>
     <VextNoteDrawer v-model="open"/>
-    <v-select v-model="scenario" :items="SCENARIO_LIST" item-title="name" return-object @change="loadScenario"/>
-    <div ref="el">
-        <VextNoteCanvas :width="size.width" :height="size.height" :show-border="false"/>
-        <AttributeHeroGrids :width="100" @click="onHeroClick"/>
-        <TaskViewer :title="task.title" :description="task.description"/>
-        <TeamViewer v-if="scenarioLoaded"/>
+    <div class="d-flex flex-column align-center">
+        <v-select v-model="scenario" :items="SCENARIO_LIST"
+            item-title="name"
+            density="compact"
+            return-object
+            style="max-width: 300px"/>
+        <div ref="el">
+            <VextNoteCanvas :width="size.width" :height="size.height" :show-border="false"/>
+            <AttributeHeroGrids :width="100" @click="onHeroClick"/>
+            <TaskViewer :title="task.title" :description="task.description"/>
+            <TeamViewer v-if="scenarioLoaded"/>
+        </div>
     </div>
 </template>
 
 <script setup>
     import * as d3 from 'd3'
-    import { ref, reactive, onMounted } from 'vue'
+    import { ref, reactive, onMounted, watch } from 'vue'
     import { useApp } from '@/store/app'
     import { useElementSize } from '@vueuse/core';
     import { storeToRefs } from 'pinia';
@@ -40,6 +46,7 @@
     }
 
     function loadScenario() {
+        scenarioLoaded.value = false;
         d3.json(scenario.value.path)
             .then(response => {
                 task.title = response.title;
@@ -71,4 +78,6 @@
                 loadScenario();
             })
     })
+
+    watch(scenario, loadScenario)
 </script>

@@ -7,5 +7,12 @@ function getAttributeSrc(attribute) {
 function getLogoSrc() {
     return `images/Dota_2_logo.png`
 }
+function isMobile() {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        console.log("hello")
+        return window.matchMedia("only screen and (max-width: 760px)").matches
+    }
+    return false;
+}
 
-export { getHeroSrc, getAttributeSrc, getLogoSrc }
+export { getHeroSrc, getAttributeSrc, getLogoSrc, isMobile }
