@@ -14,7 +14,7 @@
                     :src="getHeroSrc(hero.official_name)"
                     :lazy-src="placeholder"
                     :disabled="app.isInEnemyTeam(hero)"
-                    @click="onClick(hero)"/>
+                    @click="event => onClick(hero, event)"/>
             </v-card>
         </template>
         </v-hover>
@@ -48,8 +48,8 @@
 
     const app = useApp();
 
-    function onClick(hero) {
-        emit("click", hero);
+    function onClick(hero, event) {
+        emit("click", { hero: hero, event: event });
     }
 
     function heroOpacity(hero, isHovering) {

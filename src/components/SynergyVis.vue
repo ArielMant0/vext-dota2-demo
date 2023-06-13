@@ -141,7 +141,12 @@
                         .duration(250)
                         .attr("r", props.size*0.5)
                 })
-                .on("click", function(_, d) { app.selectByName(d.id) })
+                .on("click", function(event, d) {
+                    const [x, y] = d3.pointer(event, document.body);
+                    app.tX = x;
+                    app.tY = y;
+                    app.selectByName(d.id)
+                })
     }
 
     onMounted(draw);

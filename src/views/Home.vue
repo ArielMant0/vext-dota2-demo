@@ -1,11 +1,15 @@
 <template>
     <VextNoteDrawer v-model="open"/>
     <div class="d-flex flex-column align-center">
-        <v-select v-model="scenario" :items="SCENARIO_LIST"
-            item-title="name"
-            density="compact"
-            return-object
-            style="max-width: 300px"/>
+        <div class="d-flex align-center mt-4 mb-4">
+            <div class="mr-2">Pick a Scenario:</div>
+            <v-select v-model="scenario" :items="SCENARIO_LIST"
+                item-title="name"
+                density="compact"
+                return-object
+                hide-details
+                style="max-width: 300px"/>
+        </div>
         <div ref="el">
             <VextNoteCanvas :width="size.width" :height="size.height" :show-border="false"/>
             <AttributeHeroGrids :width="100" @click="onHeroClick"/>
@@ -13,6 +17,7 @@
             <TeamViewer v-if="scenarioLoaded"/>
         </div>
     </div>
+    <HeroTooltip/>
 </template>
 
 <script setup>
@@ -24,6 +29,7 @@
     import AttributeHeroGrids from '@/components/AttributeHeroGrids.vue'
     import TeamViewer from '@/components/TeamViewer.vue';
     import TaskViewer from '@/components/TaskViewer.vue';
+    import HeroTooltip from '@/components/HeroTooltip.vue';
 
     const app = useApp();
     const open = ref(false);
@@ -39,9 +45,12 @@
 
     const size = reactive(useElementSize(el));
 
-    function onHeroClick(hero) {
-        if (!app.isInEnemyTeam(hero)) {
-            app.selectById(hero.hero_id);
+    function onHeroClick(data) {
+        if (!app.isInEnemyTeam(data.hero)) {
+            const [x, y] = d3.pointer(data.event, document.body);
+            app.tX = x;
+            app.tY = y;
+            app.selectById(data.hero.hero_id);
         }
     }
 

@@ -179,7 +179,12 @@
                     .attr("stroke", d => app.isInEnemyTeam(d) ? app.enemyColor : "none")
                     .attr("stroke-width", d => app.isInEnemyTeam(d) ? 2 : 1)
             })
-            .on("click", function(_, d) { app.selectById(d.hero_id); })
+            .on("click", function(event, d) {
+                const [x, y] = d3.pointer(event, document.body);
+                    app.tX = x;
+                    app.tY = y;
+                app.selectById(d.hero_id);
+            })
             .attr("stroke", d => app.isInEnemyTeam(d) ? app.enemyColor : "none")
             .attr("stroke-width", d => app.isInEnemyTeam(d) ? 2 : 1)
     }

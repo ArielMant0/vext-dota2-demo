@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+    import * as d3 from 'd3';
     import { useApp } from '@/store/app';
     import { storeToRefs } from 'pinia'
     import { getAttributeSrc, getHeroSrc } from '@/use/utils'
@@ -72,15 +73,17 @@
     function switchHero() {
         app.setPositionToSelected(props.position)
     }
-    function selectHero() {
-        if (props.disabled) return;
+    function selectHero(event) {
         if (props.data) {
             if (app.selected && app.selected.hero_id === props.data.hero_id) {
                 app.selectById(null);
             } else {
+                const [x, y] = d3.pointer(event, document.body);
+                app.tX = x;
+                app.tY = y;
                 app.selectById(props.data.hero_id)
             }
-        } else if (app.selected) {
+        } else if (!props.disabled && app.selected) {
             app.setPositionToSelected(props.position)
         }
     }

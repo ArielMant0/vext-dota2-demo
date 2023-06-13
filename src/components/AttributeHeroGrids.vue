@@ -62,8 +62,8 @@
     })
     const emit = defineEmits(["click"]);
 
-    function onClick(item) {
-        emit("click", item);
+    function onClick(data) {
+        emit("click", data);
     }
 
     const roleFilters = reactive([])

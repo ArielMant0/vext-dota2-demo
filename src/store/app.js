@@ -11,6 +11,9 @@ export const useApp = defineStore('app', {
         attributes: ["Strength", "Agility", "Intelligence", "Universal"],
         attackTypes: ["Ranged", "Melee"],
 
+        tX: 0,
+        tY: 0,
+
         selected: null,
         highlightTeam: [],
         highlightEnemyTeam: [],
@@ -242,6 +245,10 @@ export const useApp = defineStore('app', {
             this.resetPositionIfDuplicate(this.selected.hero_id, position);
             this.selected = null;
             this.setState();
+        },
+
+        resetSelection() {
+            this.selected = null;
         },
 
         resetPosition(position) {
