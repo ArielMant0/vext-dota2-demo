@@ -27,7 +27,7 @@
     import { useApp } from '@/store/app'
     import { useElementSize } from '@vueuse/core';
     import { storeToRefs } from 'pinia';
-    import { useVextNote } from '@nullbuild/vext';
+    import { useVextNote, useVextSettings } from '@nullbuild/vext';
     import AttributeHeroGrids from '@/components/AttributeHeroGrids.vue'
     import TeamViewer from '@/components/TeamViewer.vue';
     import TaskViewer from '@/components/TaskViewer.vue';
@@ -42,10 +42,14 @@
 
     app.init();
 
+    const settings = useVextSettings();
     const note = useVextNote();
     note.on("canvas:created", function() {
         note.canvas.freeDrawingCursor = "crosshair";
+        settings.setBrushSize(3, false);
+        settings.setColorPrimary("#cccccc", false);
     })
+    settings.onAction = false;
 
     const el = ref(null);
     const { scenario, scenarioLoaded, SCENARIO_LIST } = storeToRefs(app);

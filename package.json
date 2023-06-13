@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "@nullbuild/vext": "^0.2.5",
+    "@nullbuild/vext": "^0.2.6",
     "@vueuse/core": "^10.1.2",
     "axios": "^1.4.0",
     "core-js": "^3.29.0",
